@@ -753,7 +753,17 @@ pub const MSG_SYN: c_int = 0x400;
 pub const MSG_CONFIRM: c_int = 0x800;
 pub const MSG_RST: c_int = 0x1000;
 pub const MSG_ERRQUEUE: c_int = 0x2000;
+// cosmo patch: MSG_NOSIGNAL is a Linux-ism (0x4000) that cosmo's
+// sendto wrapper rejects with EINVAL on Windows — Winsock doesn't
+// know the flag. Cosmo exposes the symbol as `extern const int
+// MSG_NOSIGNAL` (0x4000 on Linux, 0 on Windows), so reading it at
+// runtime lets std pass the right flag on every host.
+#[cfg(not(cosmo))]
 pub const MSG_NOSIGNAL: c_int = 0x4000;
+#[cfg(cosmo)]
+unsafe extern "C" {
+    pub static MSG_NOSIGNAL: c_int;
+}
 pub const MSG_MORE: c_int = 0x8000;
 pub const MSG_WAITFORONE: c_int = 0x10000;
 pub const MSG_FASTOPEN: c_int = 0x20000000;
