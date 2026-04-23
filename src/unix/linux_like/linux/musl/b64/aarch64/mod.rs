@@ -10,6 +10,15 @@ pub type blksize_t = c_int;
 pub type stat64 = stat;
 
 s! {
+    // cosmo patch: under cfg(cosmo), cosmocc on aarch64 emits its own
+    // `struct stat` layout (144 bytes, st_nlink at offset 16 as u64,
+    // st_mode at 24 as u32) rather than the musl-aarch64 layout
+    // (128 bytes, st_mode at 16 as u32, st_nlink at 20 as u32). This
+    // is F-001 in offsets/ANALYSIS.md — it's what produces is_dir=false
+    // on aarch64 Linux and macOS M1 when std reads the kernel's stat()
+    // output assuming musl offsets. The cosmo-shape layout below
+    // matches what offsets.com measured across all cosmo targets.
+    #[cfg(not(cosmo))]
     pub struct stat {
         pub st_dev: crate::dev_t,
         pub st_ino: crate::ino_t,
@@ -30,6 +39,28 @@ s! {
         pub st_ctime: crate::time_t,
         pub st_ctime_nsec: c_long,
         __unused: Padding<[c_uint; 2]>,
+    }
+
+    #[cfg(cosmo)]
+    pub struct stat {
+        pub st_dev: crate::dev_t,             // @ 0,  8B
+        pub st_ino: crate::ino_t,              // @ 8,  8B
+        pub st_nlink: c_ulong,                 // @ 16, 8B  (widened from musl's u32 @ 20)
+        pub st_mode: crate::mode_t,            // @ 24, 4B
+        pub st_uid: crate::uid_t,              // @ 28, 4B
+        pub st_gid: crate::gid_t,              // @ 32, 4B
+        __pad0: Padding<c_uint>,               // @ 36, 4B
+        pub st_rdev: crate::dev_t,             // @ 40, 8B
+        pub st_size: off_t,                    // @ 48, 8B
+        pub st_blksize: c_long,                // @ 56, 8B  (widened from musl's i32 + pad @ 56..64)
+        pub st_blocks: crate::blkcnt_t,        // @ 64, 8B
+        pub st_atime: crate::time_t,           // @ 72, 8B
+        pub st_atime_nsec: c_long,             // @ 80, 8B
+        pub st_mtime: crate::time_t,           // @ 88, 8B
+        pub st_mtime_nsec: c_long,             // @ 96, 8B
+        pub st_ctime: crate::time_t,           // @ 104,8B
+        pub st_ctime_nsec: c_long,             // @ 112,8B
+        __unused: Padding<[c_ulong; 3]>,       // @ 120,24B -> total 144
     }
 
     pub struct user_regs_struct {
