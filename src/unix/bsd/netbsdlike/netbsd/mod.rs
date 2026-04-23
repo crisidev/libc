@@ -1796,6 +1796,7 @@ pub const RTAX_MAX: c_int = 9;
 
 // For eventfd
 pub const EFD_SEMAPHORE: c_int = crate::O_RDWR;
+#[cfg(not(cosmo))]
 pub const EFD_NONBLOCK: c_int = crate::O_NONBLOCK;
 pub const EFD_CLOEXEC: c_int = crate::O_CLOEXEC;
 

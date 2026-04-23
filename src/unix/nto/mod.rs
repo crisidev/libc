@@ -1874,6 +1874,7 @@ pub const O_RDWR: c_int = 0o000002;
 
 pub const O_EXEC: c_int = 0o00003;
 pub const O_ASYNC: c_int = 0o0200000;
+#[cfg(not(cosmo))]
 pub const O_NDELAY: c_int = O_NONBLOCK;
 pub const O_TRUNC: c_int = 0o001000;
 pub const O_CLOEXEC: c_int = 0o020000;

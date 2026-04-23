@@ -719,7 +719,9 @@ pub const EFD_CLOEXEC: c_int = O_CLOEXEC;
 pub const EFD_NONBLOCK: c_int = O_NONBLOCK;
 
 // sys/timerfd.h
+#[cfg(not(cosmo))]
 pub const TFD_CLOEXEC: c_int = O_CLOEXEC;
+#[cfg(not(cosmo))]
 pub const TFD_NONBLOCK: c_int = O_NONBLOCK;
 pub const TFD_TIMER_ABSTIME: c_int = 1;
 pub const TFD_TIMER_CANCEL_ON_SET: c_int = 2;
@@ -1902,6 +1904,7 @@ pub const PT_HIPROC: u32 = 0x7fffffff;
 
 // uapi/linux/mount.h
 pub const OPEN_TREE_CLONE: c_uint = 0x01;
+#[cfg(not(cosmo))]
 pub const OPEN_TREE_CLOEXEC: c_uint = O_CLOEXEC as c_uint;
 
 // linux/netfilter.h
@@ -2591,7 +2594,9 @@ pub const IN_ALL_EVENTS: u32 = IN_ACCESS
     | IN_DELETE_SELF
     | IN_MOVE_SELF;
 
+#[cfg(not(cosmo))]
 pub const IN_CLOEXEC: c_int = O_CLOEXEC;
+#[cfg(not(cosmo))]
 pub const IN_NONBLOCK: c_int = O_NONBLOCK;
 
 pub const FUTEX_WAIT: c_int = 0;

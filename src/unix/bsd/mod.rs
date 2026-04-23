@@ -241,6 +241,7 @@ pub const O_NOFOLLOW: c_int = 0x100;
 pub const O_SHLOCK: c_int = 0x10;
 pub const O_EXLOCK: c_int = 0x20;
 pub const O_FSYNC: c_int = O_SYNC;
+#[cfg(not(cosmo))]
 pub const O_NDELAY: c_int = O_NONBLOCK;
 
 pub const F_GETOWN: c_int = 5;

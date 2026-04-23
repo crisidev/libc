@@ -4255,6 +4255,7 @@ pub const CLOCK_MONOTONIC_COARSE: crate::clockid_t = crate::CLOCK_MONOTONIC_FAST
 // sys/timerfd.h
 
 pub const TFD_NONBLOCK: c_int = crate::O_NONBLOCK;
+#[cfg(not(cosmo))]
 pub const TFD_CLOEXEC: c_int = O_CLOEXEC;
 pub const TFD_TIMER_ABSTIME: c_int = 0x01;
 pub const TFD_TIMER_CANCEL_ON_SET: c_int = 0x02;

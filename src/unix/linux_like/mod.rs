@@ -409,17 +409,36 @@ pub const SIGTRAP: c_int = 5;
 pub const PTHREAD_CREATE_JOINABLE: c_int = 0;
 pub const PTHREAD_CREATE_DETACHED: c_int = 1;
 
+#[cfg(not(cosmo))]
 pub const CLOCK_REALTIME: crate::clockid_t = 0;
+#[cfg(not(cosmo))]
 pub const CLOCK_MONOTONIC: crate::clockid_t = 1;
+#[cfg(not(cosmo))]
 pub const CLOCK_PROCESS_CPUTIME_ID: crate::clockid_t = 2;
+#[cfg(not(cosmo))]
 pub const CLOCK_THREAD_CPUTIME_ID: crate::clockid_t = 3;
+#[cfg(not(cosmo))]
 pub const CLOCK_MONOTONIC_RAW: crate::clockid_t = 4;
 pub const CLOCK_REALTIME_COARSE: crate::clockid_t = 5;
 pub const CLOCK_MONOTONIC_COARSE: crate::clockid_t = 6;
+#[cfg(not(cosmo))]
 pub const CLOCK_BOOTTIME: crate::clockid_t = 7;
 pub const CLOCK_REALTIME_ALARM: crate::clockid_t = 8;
 pub const CLOCK_BOOTTIME_ALARM: crate::clockid_t = 9;
 pub const CLOCK_TAI: crate::clockid_t = 11;
+
+#[cfg(cosmo)]
+unsafe extern "C" {
+    // Clock-ID values are the big one for cross-OS portability.
+    // Linux: MONOTONIC=1, REALTIME=0. FreeBSD: MONOTONIC=4, OpenBSD=3,
+    // macOS=6. Cosmopolitan populates these at load time.
+    pub static CLOCK_REALTIME: crate::clockid_t;
+    pub static CLOCK_MONOTONIC: crate::clockid_t;
+    pub static CLOCK_PROCESS_CPUTIME_ID: crate::clockid_t;
+    pub static CLOCK_THREAD_CPUTIME_ID: crate::clockid_t;
+    pub static CLOCK_MONOTONIC_RAW: crate::clockid_t;
+    pub static CLOCK_BOOTTIME: crate::clockid_t;
+}
 pub const TIMER_ABSTIME: c_int = 1;
 
 pub const RUSAGE_SELF: c_int = 0;
@@ -428,7 +447,13 @@ pub const O_RDONLY: c_int = 0;
 pub const O_WRONLY: c_int = 1;
 pub const O_RDWR: c_int = 2;
 
+#[cfg(not(cosmo))]
 pub const SOCK_CLOEXEC: c_int = O_CLOEXEC;
+#[cfg(cosmo)]
+unsafe extern "C" {
+    // See note on O_CLOEXEC in linux/musl/mod.rs.
+    pub static SOCK_CLOEXEC: c_int;
+}
 
 pub const S_IFIFO: mode_t = 0o1_0000;
 pub const S_IFCHR: mode_t = 0o2_0000;

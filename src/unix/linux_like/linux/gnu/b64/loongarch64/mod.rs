@@ -635,6 +635,7 @@ pub const O_RSYNC: c_int = 0o04010000;
 pub const O_FSYNC: c_int = O_SYNC;
 pub const O_ASYNC: c_int = 0o00020000;
 pub const O_DSYNC: c_int = 0o00010000;
+#[cfg(not(cosmo))]
 pub const O_NDELAY: c_int = O_NONBLOCK;
 pub const F_RDLCK: c_int = 0;
 pub const F_WRLCK: c_int = 1;

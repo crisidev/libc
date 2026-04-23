@@ -931,6 +931,7 @@ pub const O_PATH: c_int = 0o10000000;
 pub const O_EXEC: c_int = 0o10000000;
 pub const O_SEARCH: c_int = 0o10000000;
 pub const O_ACCMODE: c_int = 0o10000003;
+#[cfg(not(cosmo))]
 pub const O_NDELAY: c_int = O_NONBLOCK;
 pub const NI_MAXHOST: crate::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: size_t = 2048;

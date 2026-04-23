@@ -2344,7 +2344,9 @@ pub const ITIMER_REAL: c_int = 0;
 pub const ITIMER_VIRTUAL: c_int = 1;
 pub const ITIMER_PROF: c_int = 2;
 
+#[cfg(not(cosmo))]
 pub const TFD_CLOEXEC: c_int = O_CLOEXEC;
+#[cfg(not(cosmo))]
 pub const TFD_NONBLOCK: c_int = O_NONBLOCK;
 pub const TFD_TIMER_ABSTIME: c_int = 1;
 
@@ -2512,6 +2514,7 @@ pub const O_PATH: c_int = 0x00400000;
 pub const O_EXEC: c_int = O_PATH;
 pub const O_SEARCH: c_int = O_PATH;
 pub const O_ACCMODE: c_int = 03 | O_SEARCH;
+#[cfg(not(cosmo))]
 pub const O_NDELAY: c_int = O_NONBLOCK;
 pub const NI_MAXHOST: crate::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: size_t = 2048;
@@ -2584,8 +2587,10 @@ pub const PTRACE_PEEKSIGINFO: c_int = 0x4209;
 
 pub const EPOLLWAKEUP: c_int = 0x20000000;
 
+#[cfg(not(cosmo))]
 pub const EFD_NONBLOCK: c_int = crate::O_NONBLOCK;
 
+#[cfg(not(cosmo))]
 pub const SFD_NONBLOCK: c_int = crate::O_NONBLOCK;
 
 pub const TCSANOW: c_int = 0;

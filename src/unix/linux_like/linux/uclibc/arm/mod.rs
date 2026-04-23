@@ -461,6 +461,7 @@ pub const O_DSYNC: c_int = O_SYNC;
 pub const O_EXCL: c_int = 0x80;
 pub const O_FSYNC: c_int = O_SYNC;
 pub const O_LARGEFILE: c_int = 0o400000;
+#[cfg(not(cosmo))]
 pub const O_NDELAY: c_int = O_NONBLOCK;
 pub const O_NOATIME: c_int = 0o1000000;
 pub const O_NOCTTY: c_int = 0x100;

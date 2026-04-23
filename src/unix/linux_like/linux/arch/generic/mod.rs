@@ -18,23 +18,46 @@ s! {
 // arch/alpha/include/uapi/asm/socket.h
 // tools/include/uapi/asm-generic/socket.h
 // arch/mips/include/uapi/asm/socket.h
+// NOTE: cosmopolitan populates these as extern const int at load time
+// with the native OS value. Linux SOL_SOCKET=1, FreeBSD=0xffff, etc.
+#[cfg(not(cosmo))]
 pub const SOL_SOCKET: c_int = 1;
+#[cfg(cosmo)]
+unsafe extern "C" {
+    pub static SOL_SOCKET: c_int;
+    pub static SO_REUSEADDR: c_int;
+    pub static SO_TYPE: c_int;
+    pub static SO_ERROR: c_int;
+    pub static SO_DONTROUTE: c_int;
+    pub static SO_BROADCAST: c_int;
+    pub static SO_KEEPALIVE: c_int;
+    pub static SO_OOBINLINE: c_int;
+    pub static SO_LINGER: c_int;
+    pub static SO_REUSEPORT: c_int;
+}
 
-// Defined in unix/linux_like/mod.rs
-// pub const SO_DEBUG: c_int = 1;
+#[cfg(not(cosmo))]
 pub const SO_REUSEADDR: c_int = 2;
+#[cfg(not(cosmo))]
 pub const SO_TYPE: c_int = 3;
+#[cfg(not(cosmo))]
 pub const SO_ERROR: c_int = 4;
+#[cfg(not(cosmo))]
 pub const SO_DONTROUTE: c_int = 5;
+#[cfg(not(cosmo))]
 pub const SO_BROADCAST: c_int = 6;
 pub const SO_SNDBUF: c_int = 7;
 pub const SO_RCVBUF: c_int = 8;
+#[cfg(not(cosmo))]
 pub const SO_KEEPALIVE: c_int = 9;
+#[cfg(not(cosmo))]
 pub const SO_OOBINLINE: c_int = 10;
 pub const SO_NO_CHECK: c_int = 11;
 pub const SO_PRIORITY: c_int = 12;
+#[cfg(not(cosmo))]
 pub const SO_LINGER: c_int = 13;
 pub const SO_BSDCOMPAT: c_int = 14;
+#[cfg(not(cosmo))]
 pub const SO_REUSEPORT: c_int = 15;
 pub const SO_PASSCRED: c_int = 16;
 pub const SO_PEERCRED: c_int = 17;
@@ -202,7 +225,13 @@ pub const TIOCCONS: Ioctl = 0x541D;
 pub const TIOCGSERIAL: Ioctl = 0x541E;
 pub const TIOCSSERIAL: Ioctl = 0x541F;
 pub const TIOCPKT: Ioctl = 0x5420;
+#[cfg(not(cosmo))]
 pub const FIONBIO: Ioctl = 0x5421;
+#[cfg(cosmo)]
+unsafe extern "C" {
+    // Linux 0x5421, FreeBSD/OpenBSD/macOS 0x8004667e (BSD ioctl encoding).
+    pub static FIONBIO: Ioctl;
+}
 pub const TIOCNOTTY: Ioctl = 0x5422;
 pub const TIOCSETD: Ioctl = 0x5423;
 pub const TIOCGETD: Ioctl = 0x5424;

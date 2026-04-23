@@ -8,6 +8,7 @@ use crate::{
 };
 
 /* Flags for pidfd_open().  */
+#[cfg(not(cosmo))]
 pub const PIDFD_NONBLOCK: c_uint = crate::O_NONBLOCK as c_uint;
 pub const PIDFD_THREAD: c_uint = crate::O_EXCL as c_uint;
 

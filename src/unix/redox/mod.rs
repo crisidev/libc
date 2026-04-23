@@ -510,6 +510,7 @@ pub const O_WRONLY: c_int = 0x0002_0000;
 pub const O_RDWR: c_int = 0x0003_0000;
 pub const O_ACCMODE: c_int = 0x0003_0000;
 pub const O_NONBLOCK: c_int = 0x0004_0000;
+#[cfg(not(cosmo))]
 pub const O_NDELAY: c_int = O_NONBLOCK;
 pub const O_APPEND: c_int = 0x0008_0000;
 pub const O_SHLOCK: c_int = 0x0010_0000;

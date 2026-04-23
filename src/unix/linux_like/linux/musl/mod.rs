@@ -530,7 +530,20 @@ pub const NCCS: usize = 19;
 
 pub const O_TRUNC: c_int = 512;
 pub const O_NOATIME: c_int = 0o1000000;
+#[cfg(not(cosmo))]
 pub const O_CLOEXEC: c_int = 0x80000;
+#[cfg(cosmo)]
+unsafe extern "C" {
+    // Cosmopolitan exposes O_CLOEXEC as `extern const int` populated at
+    // load time with the native OS value. On Linux this is 0x80000,
+    // on FreeBSD 0x100000, OpenBSD 0x10000, macOS 0x1000000. See
+    // offsets/ANALYSIS.md in the ape-rs investigation.
+    pub static O_CLOEXEC: c_int;
+}
+// O_TMPFILE is defined via OR with O_DIRECTORY; under cfg(cosmo) the
+// LHS of OR would need to be an expression not a const, so we only
+// expose this in non-cosmo mode for now.
+#[cfg(not(cosmo))]
 pub const O_TMPFILE: c_int = 0o20000000 | O_DIRECTORY;
 
 pub const EBFONT: c_int = 59;
@@ -573,6 +586,7 @@ pub const O_PATH: c_int = 0o10000000;
 pub const O_EXEC: c_int = 0o10000000;
 pub const O_SEARCH: c_int = 0o10000000;
 pub const O_ACCMODE: c_int = 0o10000003;
+#[cfg(not(cosmo))]
 pub const O_NDELAY: c_int = O_NONBLOCK;
 pub const NI_MAXHOST: crate::socklen_t = 255;
 pub const PTHREAD_STACK_MIN: size_t = 2048;
@@ -581,7 +595,13 @@ pub const MAP_ANONYMOUS: c_int = MAP_ANON;
 
 pub const SOCK_SEQPACKET: c_int = 5;
 pub const SOCK_DCCP: c_int = 6;
+#[cfg(not(cosmo))]
 pub const SOCK_NONBLOCK: c_int = O_NONBLOCK;
+#[cfg(cosmo)]
+unsafe extern "C" {
+    // See note on O_NONBLOCK in musl/b64/aarch64/mod.rs.
+    pub static SOCK_NONBLOCK: c_int;
+}
 #[deprecated(since = "0.2.70", note = "AF_PACKET must be used instead")]
 pub const SOCK_PACKET: c_int = 10;
 
@@ -641,8 +661,10 @@ pub const PF_NFC: c_int = AF_NFC;
 pub const PF_VSOCK: c_int = AF_VSOCK;
 pub const PF_XDP: c_int = AF_XDP;
 
+#[cfg(not(cosmo))]
 pub const EFD_NONBLOCK: c_int = crate::O_NONBLOCK;
 
+#[cfg(not(cosmo))]
 pub const SFD_NONBLOCK: c_int = crate::O_NONBLOCK;
 
 pub const TCSANOW: c_int = 0;

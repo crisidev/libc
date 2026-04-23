@@ -1687,7 +1687,9 @@ pub const SECCOMP_USER_NOTIF_FLAG_CONTINUE: c_ulong = 1;
 pub const SECCOMP_ADDFD_FLAG_SETFD: c_ulong = 1;
 pub const SECCOMP_ADDFD_FLAG_SEND: c_ulong = 2;
 
+#[cfg(not(cosmo))]
 pub const TFD_CLOEXEC: c_int = O_CLOEXEC;
+#[cfg(not(cosmo))]
 pub const TFD_NONBLOCK: c_int = O_NONBLOCK;
 pub const TFD_TIMER_ABSTIME: c_int = 1;
 pub const TFD_TIMER_CANCEL_ON_SET: c_int = 2;
@@ -3138,11 +3140,14 @@ pub const IN_ALL_EVENTS: u32 = IN_ACCESS
     | IN_DELETE_SELF
     | IN_MOVE_SELF;
 
+#[cfg(not(cosmo))]
 pub const IN_CLOEXEC: c_int = O_CLOEXEC;
+#[cfg(not(cosmo))]
 pub const IN_NONBLOCK: c_int = O_NONBLOCK;
 
 // uapi/linux/mount.h
 pub const OPEN_TREE_CLONE: c_uint = 0x01;
+#[cfg(not(cosmo))]
 pub const OPEN_TREE_CLOEXEC: c_uint = O_CLOEXEC as c_uint;
 
 // uapi/linux/netfilter/nf_tables.h
