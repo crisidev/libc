@@ -661,11 +661,22 @@ pub const PF_NFC: c_int = AF_NFC;
 pub const PF_VSOCK: c_int = AF_VSOCK;
 pub const PF_XDP: c_int = AF_XDP;
 
+// cosmo patch: these are derived from O_NONBLOCK (runtime extern
+// static under cfg(cosmo), so they can't be const). But eventfd /
+// signalfd are Linux-only syscalls — on non-Linux hosts cosmo will
+// just ENOSYS the syscall itself, regardless of what flag value we
+// pass. So hard-code the Linux value (0x800) so downstream crates
+// that reference the symbol (e.g. mio's eventfd waker) still
+// compile.
 #[cfg(not(cosmo))]
 pub const EFD_NONBLOCK: c_int = crate::O_NONBLOCK;
+#[cfg(cosmo)]
+pub const EFD_NONBLOCK: c_int = 0x800;
 
 #[cfg(not(cosmo))]
 pub const SFD_NONBLOCK: c_int = crate::O_NONBLOCK;
+#[cfg(cosmo)]
+pub const SFD_NONBLOCK: c_int = 0x800;
 
 pub const TCSANOW: c_int = 0;
 pub const TCSADRAIN: c_int = 1;

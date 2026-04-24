@@ -4188,6 +4188,13 @@ extern "C" {
         old_value: *mut crate::itimerspec,
     ) -> c_int;
     pub fn quotactl(cmd: c_int, special: *const c_char, id: c_int, data: *mut c_char) -> c_int;
+    // cosmo patch: cosmo's libcosmo.a exposes the Linux epoll syscalls
+    // under the `sys_*` prefix, not the POSIX-ish names. Re-link
+    // those five functions there under cfg(cosmo) so downstream
+    // users (mio / tokio / reqwest) link cleanly. At runtime they'll
+    // still only work on Linux hosts — the syscalls themselves
+    // return ENOSYS elsewhere.
+    #[cfg_attr(cosmo, link_name = "sys_epoll_pwait")]
     pub fn epoll_pwait(
         epfd: c_int,
         events: *mut crate::epoll_event,
@@ -4235,14 +4242,25 @@ extern "C" {
         cpusetsize: size_t,
         cpuset: *const crate::cpu_set_t,
     ) -> c_int;
+    // cosmo patch: link to cosmo's internal sys_epoll_* symbols (see
+    // note on epoll_pwait above).
+    #[cfg_attr(cosmo, link_name = "sys_epoll_create")]
     pub fn epoll_create(size: c_int) -> c_int;
+    #[cfg_attr(cosmo, link_name = "sys_epoll_create1")]
     pub fn epoll_create1(flags: c_int) -> c_int;
+    // cosmo patch: NOT link-renamed. On aarch64 Linux the bare
+    // `epoll_wait` syscall doesn't exist — cosmo's `sys_epoll_wait`
+    // ENOSYSes there. Instead, downstream binaries ship a tiny
+    // `epoll_wait` shim (see e.g. xh/src/main.rs) that wraps
+    // `sys_epoll_pwait` with a NULL sigmask so the same 4-arg
+    // signature works on both x86_64 and aarch64.
     pub fn epoll_wait(
         epfd: c_int,
         events: *mut crate::epoll_event,
         maxevents: c_int,
         timeout: c_int,
     ) -> c_int;
+    #[cfg_attr(cosmo, link_name = "sys_epoll_ctl")]
     pub fn epoll_ctl(epfd: c_int, op: c_int, fd: c_int, event: *mut crate::epoll_event) -> c_int;
     pub fn unshare(flags: c_int) -> c_int;
     pub fn umount(target: *const c_char) -> c_int;
@@ -4255,6 +4273,12 @@ extern "C" {
         len: size_t,
         flags: c_uint,
     ) -> ssize_t;
+    // cosmo patch: libc::eventfd takes (initval, flags) — that's
+    // the Linux `eventfd2` ABI (the older `eventfd` syscall had no
+    // `flags` arg). aarch64 Linux never got the old eventfd syscall
+    // number; eventfd2 is the only one there. Route to
+    // `sys_eventfd2` so it works on both arches.
+    #[cfg_attr(cosmo, link_name = "sys_eventfd2")]
     pub fn eventfd(initval: c_uint, flags: c_int) -> c_int;
     pub fn eventfd_read(fd: c_int, value: *mut eventfd_t) -> c_int;
     pub fn eventfd_write(fd: c_int, value: eventfd_t) -> c_int;
